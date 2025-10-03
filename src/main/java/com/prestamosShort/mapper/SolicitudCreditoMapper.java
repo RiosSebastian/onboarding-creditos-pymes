@@ -1,0 +1,27 @@
+package com.prestamosShort.mapper;
+
+import com.prestamosShort.dto.SolicitudCreditoDtoRes;
+import com.prestamosShort.dto.dtoReq.SolicitudCreditoDtoReq;
+import com.prestamosShort.entity.SolicitudCredito;
+
+public class SolicitudCreditoMapper {
+    public SolicitudCreditoDtoRes toDto(SolicitudCredito solicitudCredito){
+        return SolicitudCreditoDtoRes.builder()
+                .estadoSolicitud(solicitudCredito.getEstadoSolicitud())
+                .fechaActualizacion(solicitudCredito.getFechaActualizacion())
+                .fechaCreacion(solicitudCredito.getFechaCreacion())
+                .montoSolicitado(solicitudCredito.getMontoSolicitado())
+                .proposito(solicitudCredito.getProposito())
+                .build();
+    }
+
+    public SolicitudCredito toSolicitudCredito(SolicitudCreditoDtoReq solicitudCreditoDtoReq){
+        return SolicitudCredito.builder()
+                .proposito(solicitudCreditoDtoReq.proposito())
+                .fechaCreacion(solicitudCreditoDtoReq.fechaCreacion())
+                .fechaActualizacion(solicitudCreditoDtoReq.fechaActualizacion())
+                .estadoSolicitud(solicitudCreditoDtoReq.estadoSolicitud())
+                .montoSolicitado(solicitudCreditoDtoReq.montoSolicitado())
+                .build();
+    }
+}

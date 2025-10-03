@@ -1,4 +1,10 @@
 package com.prestamosShort.dto.dtoReq;
 
-public record EmpresaDtoReq() {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record EmpresaDtoReq( @NotNull String razonSocial,
+                            @NotBlank String cuit,
+                            @NotBlank String direccion,
+                            @NotNull String telefono) {
 }
