@@ -3,7 +3,9 @@ package com.prestamosShort.mapper;
 import com.prestamosShort.dto.SolicitudCreditoDtoRes;
 import com.prestamosShort.dto.dtoReq.SolicitudCreditoDtoReq;
 import com.prestamosShort.entity.SolicitudCredito;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SolicitudCreditoMapper {
     public SolicitudCreditoDtoRes toDto(SolicitudCredito solicitudCredito){
         return SolicitudCreditoDtoRes.builder()

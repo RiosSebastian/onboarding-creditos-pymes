@@ -7,6 +7,7 @@ import java.time.LocalTime;
 
 @Builder
 public record SolicitudCreditoDtoRes( Integer montoSolicitado,
+                                      String plazo,
                                      String proposito,
                                      EstadoSolicitud estadoSolicitud,
                                      LocalTime fechaCreacion,

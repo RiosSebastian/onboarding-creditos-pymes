@@ -18,6 +18,7 @@ public class SolicitudCredito {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private Integer montoSolicitado;
+    private String plazo;
     private String proposito;
     private EstadoSolicitud estadoSolicitud;
     private LocalTime fechaCreacion;

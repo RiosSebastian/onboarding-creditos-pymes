@@ -3,7 +3,9 @@ package com.prestamosShort.mapper;
 import com.prestamosShort.dto.EmpresaDtoRes;
 import com.prestamosShort.dto.dtoReq.EmpresaDtoReq;
 import com.prestamosShort.entity.Empresa;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EmpresaMapper {
     public EmpresaDtoRes toDto(Empresa empresa){
         return EmpresaDtoRes.builder()

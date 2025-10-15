@@ -3,7 +3,9 @@ package com.prestamosShort.mapper;
 import com.prestamosShort.dto.KycRequestDtoRes;
 import com.prestamosShort.dto.dtoReq.KycRequestDtoReq;
 import com.prestamosShort.entity.KycRequest;
+import org.springframework.stereotype.Component;
 
+@Component
 public class KycRequestMapper {
     public KycRequestDtoRes toDto(KycRequest kycRequest){
         return KycRequestDtoRes.builder()

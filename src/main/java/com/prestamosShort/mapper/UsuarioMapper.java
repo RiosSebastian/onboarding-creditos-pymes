@@ -3,7 +3,9 @@ package com.prestamosShort.mapper;
 import com.prestamosShort.dto.UsuarioDtoRes;
 import com.prestamosShort.dto.dtoReq.UsuarioDtoReq;
 import com.prestamosShort.entity.Usuario;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UsuarioMapper {
     public UsuarioDtoRes toDto(Usuario usuario){
         return UsuarioDtoRes.builder()
