@@ -6,12 +6,14 @@ import com.prestamosShort.servis.UsuarioServis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-    @RequestMapping("/api/usuarios")
+@RequestMapping("/api/usuarios")
+@PreAuthorize("denyAll()")
     public class UsuarioController {
 
         @Autowired
@@ -19,6 +21,7 @@ import java.util.List;
 
         //Crear usuario
         @PostMapping
+        @PreAuthorize("permitAll()")
         public ResponseEntity<UsuarioDtoRes> createUser(@RequestBody UsuarioDtoReq usuarioDtoReq) {
             UsuarioDtoRes nuevoUsuario = usuarioServis.createUser(usuarioDtoReq);
             return ResponseEntity.ok(nuevoUsuario);
@@ -26,6 +29,7 @@ import java.util.List;
 
         // Obtener usuario por ID
         @GetMapping("/{id}")
+        @PreAuthorize("hasAutority('READ')")
         public ResponseEntity<UsuarioDtoRes> getUserById(@PathVariable Long id) {
             try {
                 UsuarioDtoRes usuario = usuarioServis.getUserById(id);

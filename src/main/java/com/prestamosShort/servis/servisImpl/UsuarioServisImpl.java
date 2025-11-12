@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class UsuarioServisImpl implements UsuarioServis {
-    @Autowired
-    private  UsuarioServis usuarioServis;
+
     @Autowired
     private UsuarioMapper usuarioMapper;
     @Autowired
