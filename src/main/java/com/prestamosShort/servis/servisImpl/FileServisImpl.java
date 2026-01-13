@@ -36,11 +36,13 @@ public class FileServisImpl implements FileServis {
 
     @Override
     public Optional<FileEntity> getFile(UUID id) throws FileNotFoundException {
-        Optional<FileEntity> file = fileRepository.findById(id);//traer de base de datos
-        if(file.isPresent()){
+        Optional<FileEntity> file = fileRepository.findById(id); // traer de base de datos
+
+        if (file.isPresent()) {
             return file;
         }
-        return new FileNotFoundException;
+
+        throw new FileNotFoundException("El archivo con ID " + id + " no existe");
     }
 
 

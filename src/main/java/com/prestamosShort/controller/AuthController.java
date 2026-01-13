@@ -1,7 +1,15 @@
 package com.prestamosShort.controller;
 
+import com.prestamosShort.dto.AuthRequest;
+import com.prestamosShort.servis.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -10,15 +18,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    @PostMapping(value = "login")
-    public String Login(){
-        return "login from public endpont";
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(
+            @RequestBody AuthRequest request) {
+
+        Authentication authentication =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.email(),
+                                request.password()
+                        )
+                );
+
+        String token = jwtService.generateToken(
+                (UserDetails) authentication.getPrincipal()
+        );
+
+        return ResponseEntity.ok(token);
     }
-
-    @PostMapping(value = "register")
-    public String register(){
-        return "register from public endpont";
-    }
-
-
 }
+

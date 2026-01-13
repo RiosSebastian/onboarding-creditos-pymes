@@ -2,6 +2,8 @@ package com.prestamosShort.config;
 
 
 
+import com.prestamosShort.util.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,85 +18,70 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-     //@Bean
-    /**public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .httpBasic(Customizer.withDefaults())//se usa solamente cuando se van a logear con usuario y contraseña con token es de otra forma
-                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(http -> {
-                    //configurar los endpoins publicos
-                    http.requestMatchers(HttpMethod.POST, "/api/usuarios" ).permitAll();
-                    //configurar los endpoinsts privados
-                    http.requestMatchers(HttpMethod.GET, "/api/usuarios/{id}").hasAnyAuthority("ADMIN", "OPERADOR");
-                    //configurar el resto de endpoint -NO ESPECIFICADOS
-                    http.anyRequest().denyAll();//si el usuario le pega a un edpoin que no este definido arriba no lo va a dejer pasar
-                    http.anyRequest().authenticated();//otra manera como el de la linia 47 osea el de arriba de este.
 
-                })
-    .build();
-
-    }**/
-
-@Bean
-public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
- return httpSecurity
- .csrf(csrf -> csrf.disable())
- .httpBasic(Customizer.withDefaults())//se usa solamente cuando se van a logear con usuario y contraseña con token es de otra forma
- .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
- .build();
-
- }
+    private final JwtAuthenticationFilter jwtFilter;
+    private final UserDetailsService userDetailsService;
 
     @Bean
-    public AuthenticationManager authenticationManager( AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return  authenticationConfiguration.getAuthenticationManager();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
+
+        return http
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(
+                        session -> session
+                                .sessionCreationPolicy(
+                                        SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/auth/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(
+                        jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .build();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService());
         return provider;
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
-        List<UserDetailsService> userDetailsServiceList = new ArrayList<>();
-
-        userDetailsServiceList.add((UserDetailsService) User.withUsername("sebastian")
-                .password("1234")
-                .roles("ADMIN")
-                .authorities("READ","CREATE")
-                .build());
-        userDetailsServiceList.add((UserDetailsService) User.withUsername("esteban")
-                .password("1234")
-                .roles("USER")
-                .authorities("READ")
-                .build());
-        return new InMemoryUserDetailsManager((UserDetails) userDetailsServiceList);
-
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config)
+            throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
-
-
 }
